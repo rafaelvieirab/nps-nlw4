@@ -1,9 +1,12 @@
+import 'reflect-metadata';
 import express from 'express';
+
+import './database';
+import { router } from './router';
 
 const app = express();
 
-app.get('/api', (request, response) => {
-  
-});
+app.use(express.json());
+app.use(router);
 
 app.listen(3333);
