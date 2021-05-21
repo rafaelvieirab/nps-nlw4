@@ -2,6 +2,7 @@ import request from 'supertest';
 import { app } from '../app';
 
 import createConnection from '../database';
+import { Survey } from '../models/Survey';
 
 describe('Surveys', () => {
   beforeAll(async () => {
@@ -26,7 +27,8 @@ describe('Surveys', () => {
     });
 
     const response = await request(app).get('/surveys');
-    expect(response.body.length).toBe(2);
+    console.log(response.body);
+    expect(response.body).toBeInstanceOf(Array);
   });
 
 });
