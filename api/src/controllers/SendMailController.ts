@@ -15,15 +15,15 @@ class SendMailController {
     const surveyRepository = getCustomRepository(SurveyRepository);
     const surveyUserRepository = getCustomRepository(SurveyUserRepository);
 
-    const user = await userRepository.findOne({email});
-    if(!user) {
+    const user = await userRepository.findOne({ email });
+    if (!user) {
       response.status(400).json({
         error: 'User does not exists',
       });
     }
 
-    const survey = await surveyRepository.findOne({id: survey_id});
-    if(!survey) {
+    const survey = await surveyRepository.findOne({ id: survey_id });
+    if (!survey) {
       response.status(400).json({
         error: 'Survey does not exists',
       });
@@ -34,28 +34,23 @@ class SendMailController {
       name: user.name,
       title: survey.title,
       description: survey.description,
-      user_id: user.id,
+      id: '',
       link: process.env.URL_MAIL,
     };
 
-    // const surveyUserAlreadyExists = await surveyUserRepository.findOne({
-    //   where: [{ user_id: user.id }, { value: null }],
-    // });
-    const surveyUserAlreadyExists = await surveyUserRepository.findByUserIdAndNullValue(user.id);
+    let surveyUser = await surveyUserRepository.findByUserIdAndNullValue(user.id);
 
-    if(surveyUserAlreadyExists) {
-      await SendMailService.execute(email, survey.title, variables, npsPath);
-      return response.json(surveyUserAlreadyExists);
-    } else {
-      const surveyUser = surveyUserRepository.create({
+    if (!surveyUser) {
+      const createdSurveyUser = surveyUserRepository.create({
         user_id: user.id,
         survey_id
       });
-      await surveyUserRepository.save(surveyUser);
-      
-      await SendMailService.execute(email, survey.title, variables, npsPath);
-      return response.status(200).json(surveyUser);
-    }
+      await surveyUserRepository.save(createdSurveyUser);
+      surveyUser = createdSurveyUser;
+  } 
+    variables.id = surveyUser.id;
+    await SendMailService.execute(email, survey.title, variables, npsPath);
+    return response.status(200).json(surveyUser);
   }
 }
 
