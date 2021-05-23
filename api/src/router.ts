@@ -1,9 +1,9 @@
-import { Router } from "express";
-import { AnswearController } from "./controllers/AnswerController";
-import { NpsController } from "./controllers/NpsController";
-import { SendMailController } from "./controllers/SendMailController";
-import { SurveyController } from "./controllers/SurveyController";
-import { UserController } from "./controllers/UserController";
+import { Router } from 'express';
+import { AnswearController } from './controllers/AnswerController';
+import { NpsController } from './controllers/NpsController';
+import { SendMailController } from './controllers/SendMailController';
+import { SurveyController } from './controllers/SurveyController';
+import { UserController } from './controllers/UserController';
 
 const router = Router(); 
 

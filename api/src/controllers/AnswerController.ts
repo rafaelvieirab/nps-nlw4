@@ -1,14 +1,12 @@
-import { Request, Response } from "express";
-import { getCustomRepository } from "typeorm";
-import { SurveyUserRepository } from "../repositories/SurveyUserRepository";
+import { Request, Response } from 'express';
+import { getCustomRepository } from 'typeorm';
+import { AppError } from '../errors/AppError';
+import { SurveyUserRepository } from '../repositories/SurveyUserRepository';
 
 class AnswearController {
   async execute(request: Request, response: Response) {
-    console.log('aqui');
     const { value } = request.params;
     const { id } = request.query;
-
-    console.log('aqui');
 
     const surveyUserRepository = getCustomRepository(SurveyUserRepository);
 
@@ -17,9 +15,7 @@ class AnswearController {
     });
 
     if(!surveyUser) {
-      return response.status(400).json({
-        error: "Survey User does not exists!"
-      });
+      throw new AppError('Survey User does not exists!');
     }
 
     surveyUser.value = Number(value);
