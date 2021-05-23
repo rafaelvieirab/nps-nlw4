@@ -1,14 +1,26 @@
-import { Request, Response } from "express";
-import { getCustomRepository } from "typeorm";
+import { Request, Response } from 'express';
+import { getCustomRepository } from 'typeorm';
 import path from 'path';
+import * as yup from 'yup';
 
-import { SurveyRepository } from "../repositories/SurveyRepository";
-import { UserRepository } from "../repositories/UserRepository";
-import { SurveyUserRepository } from "../repositories/SurveyUserRepository";
-import SendMailService from "../services/SendMailService";
+import { SurveyRepository } from '../repositories/SurveyRepository';
+import { UserRepository } from '../repositories/UserRepository';
+import { SurveyUserRepository } from '../repositories/SurveyUserRepository';
+import SendMailService from '../services/SendMailService';
 
 class SendMailController {
   async execute(request: Request, response: Response) {
+    const schema = yup.object().shape({
+      email: yup.string().email().required(),
+      survey_id: yup.string().required()
+    });
+
+    try {
+      await schema.validate(request.body, { abortEarly: false });
+    } catch (err) {
+      return response.status(400).json({ error: err});
+    }
+    
     const { email, survey_id } = request.body;
 
     const userRepository = getCustomRepository(UserRepository);
