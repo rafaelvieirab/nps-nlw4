@@ -1,6 +1,9 @@
 # Database
 src/database/database.sqlite
 
+# VSCode
+*.vscode
+
 # Logs
 logs
 *.log
